@@ -19,6 +19,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.PrematureJwtException;
+import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
 public class JWTAuthorizationFilter extends OncePerRequestFilter{
@@ -38,7 +40,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
 	 */	
 	private final String HEADER = "Authorization";
 	private final String PREFIX = "Bearer ";
-	private final String SECRET = "mySecretKey";
+	private static final String SECRET = "mySecretKey";
+	private static final String SECRET_REFRESH_TOKEN = "TheSeCreTki";
 
 	/*
 	 *
@@ -66,12 +69,22 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
 			}
 			chain.doFilter(request, response);
 		// En caso de arrojarse algun error se recibe un 403 de acceso denegado como respuesta.
-		} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
+		} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | PrematureJwtException | SignatureException e) {
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 			return;
 		}
 	}	
+	
+//	private boolean refreshToken() {
+//		try {
+//			
+//			if ()
+//			
+//		} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
+//			
+//		}
+//	}
 
 	/*
 	 *  Metodo validador de tokens
@@ -126,6 +139,14 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
 		if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX))
 			return false;
 		return true;
+	}
+
+	public static String getSecret() {
+		return SECRET;
+	}
+
+	public static String getSecretRefreshToken() {
+		return SECRET_REFRESH_TOKEN;
 	}
 	
 }

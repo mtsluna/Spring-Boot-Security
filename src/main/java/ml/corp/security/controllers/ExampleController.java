@@ -1,4 +1,4 @@
-package ml.corp.security.controller;
+package ml.corp.security.controllers;
 
 import java.util.HashMap;
 import java.util.Map;

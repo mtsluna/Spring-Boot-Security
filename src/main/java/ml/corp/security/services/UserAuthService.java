@@ -1,10 +1,13 @@
-package ml.corp.security.auth;
+package ml.corp.security.services;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Base64;
 
 import org.springframework.stereotype.Service;
+
+import ml.corp.security.models.UserAuth;
+import ml.corp.security.repositories.UserAuthRepository;
 
 @Service
 public class UserAuthService {
@@ -15,9 +18,20 @@ public class UserAuthService {
 		this.userAuthRepository = userAuthRepository;
 	}
 	
+	public boolean registerUser(UserAuth userAuth) {
+		
+		if (this.userAuthRepository.countUser(userAuth.getUsername()) == 0) {
+			this.userAuthRepository.save(userAuth);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	public boolean checkUser(UserAuth userAuth) {	
 		
-		int result = this.userAuthRepository.checkUser(encript(userAuth.getUsername()), encript(userAuth.getPassword()));
+		int result = this.userAuthRepository.checkUser(userAuth.getUsername(), encript(userAuth.getPassword()));
 		if (result == 0) {
 			return false;
 		}
@@ -39,7 +53,6 @@ public class UserAuthService {
 			}
 			
 			text = sb.toString();
-			System.out.println(text);
 			
 		} catch (Exception e) {}
 		

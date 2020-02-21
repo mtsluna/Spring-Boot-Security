@@ -1,4 +1,4 @@
-package ml.corp.security.auth;
+package ml.corp.security.models;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
